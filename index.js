@@ -23,7 +23,9 @@ class Ora {
 		}, options);
 
 		const sp = this.options.spinner;
-		this.spinner = typeof sp === 'object' ? sp : (process.platform === 'win32' ? cliSpinners.line : (cliSpinners[sp] || cliSpinners.dots)); // eslint-disable-line no-nested-ternary
+		const fallbackToLineSpinner = process.platform === 'win32' && !process.env.ConEmuPID;
+
+		this.spinner = typeof sp === 'object' ? sp : (fallbackToLineSpinner ? cliSpinners.line : (cliSpinners[sp] || cliSpinners.dots)); // eslint-disable-line no-nested-ternary
 
 		if (this.spinner.frames === undefined) {
 			throw new Error('Spinner must define `frames`');
